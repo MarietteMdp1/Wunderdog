@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Wunderdog</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+--deep-blue:#2B6691;
+--teal:#4FC3CA;
+--coral:#ED8264;
+--amber:#E8A849;
+--light-grey:#F8F9FA;
+--sage:#7CB69D;
+--white:#ffffff;
+--text:#1a2e3b;
+--text-light:#5a7080;
+--text-lighter:#8fa3b0;
+--border:#e2e8f0;
+--shadow:0 1px 3px rgba(0,0,0,0.08);
+--shadow-md:0 4px 12px rgba(0,0,0,0.1);
+--radius:16px;
+--radius-sm:10px;
+--radius-xs:8px;
+--transition:all 0.2s ease;
+}
+body{font-family:'Poppins',sans-serif;background:var(--light-grey);color:var(--text);display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--deep-blue);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:var(--transition);}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.sidebar-logo span{font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.5px;}
+.sidebar-logo span em{color:var(--coral);font-style:normal;}
+.nav{flex:1;padding:16px 12px;overflow-y:auto;}
+.nav a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-xs);color:rgba(255,255,255,0.7);text-decoration:none;font-size:13.5px;font-weight:500;margin-bottom:2px;transition:var(--transition);}
+.nav a:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.nav a.active{background:var(--teal);color:#fff;font-weight:600;}
+.nav a .icon{width:22px;text-align:center;font-size:15px;display:inline-flex;align-items:center;justify-content:center;}
+.badge{background:var(--teal);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:auto;line-height:1.4;}
+.badge.alert{background:var(--coral);}
+.sidebar-bottom{padding:16px 12px;border-top:1px solid rgba(255,255,255,0.1);}
+.sidebar-bottom a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-xs);color:rgba(255,255,255,0.6);text-decoration:none;font-size:13px;font-weight:500;margin-bottom:2px;transition:var(--transition);}
+.sidebar-bottom a:hover{background:rgba(255,255,255,0.1);color:#fff;}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;padding:32px 36px;max-width:1200px;}
+
+/* HEADER */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.page-header h1{font-size:28px;font-weight:700;letter-spacing:-0.5px;}
+.page-header p{font-size:14px;color:var(--text-light);margin-top:2px;}
+
+/* HELP TOP BAR */
+.help-top-bar{display:flex;align-items:center;gap:8px;margin-bottom:20px;}
+.help-top-link{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:50px;background:#fff;border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text-light);text-decoration:none;transition:var(--transition);box-shadow:var(--shadow);}
+.help-top-link:hover{border-color:var(--teal);color:var(--teal);box-shadow:var(--shadow-md);}
+.help-top-link .help-top-icon{font-size:15px;display:inline-flex;align-items:center;}
+
+/* ALERT */
+.alert-banner{border-radius:var(--radius-xs);padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-size:13.5px;}
+.alert-banner.amber{background:#fef8e7;border:1px solid #fde68a;color:#92600a;}
+.alert-banner.amber strong{color:#78500a;}
+.alert-banner .alert-icon{font-size:18px;display:inline-flex;align-items:center;}
+
+/* STAT CARDS */
+.stat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:#fff;border-radius:var(--radius-sm);padding:18px 20px;border:1px solid var(--border);box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:var(--transition);border-top:3px solid transparent;display:block;}
+.stat-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);}
+.stat-card.teal{border-top-color:var(--teal);}
+.stat-card.coral{border-top-color:var(--coral);}
+.stat-card.amber{border-top-color:var(--amber);}
+.stat-card .sc-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-lighter);margin-bottom:6px;}
+.stat-card .sc-value{font-size:24px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.stat-card .sc-detail{font-size:12px;color:var(--text-light);}
+.stat-card .sc-link{font-size:12px;font-weight:600;color:var(--teal);margin-top:8px;display:inline-block;}
+
+/* PROGRESS */
+.progress-section{background:#fff;border-radius:var(--radius-sm);padding:16px 20px;border:1px solid var(--border);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.progress-section .ps-label{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;}
+.progress-section .ps-count{font-size:12px;color:var(--text-lighter);font-weight:500;white-space:nowrap;}
+.progress-bar-bg{flex:1;height:6px;background:#e8edf2;border-radius:3px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:var(--teal);border-radius:3px;width:0%;}
+
+/* QUICK ACTIONS */
+.quick-actions{background:var(--deep-blue);border-radius:var(--radius-sm);padding:16px 20px;margin-bottom:28px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.quick-actions .qa-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:rgba(255,255,255,0.5);margin-right:4px;white-space:nowrap;}
+.qa-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:50px;font-size:12.5px;font-weight:600;}
+.qa-btn.outline{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);}
+.qa-btn.outline:hover{background:rgba(255,255,255,0.2);}
+.qa-btn.primary{background:var(--coral);color:#fff;}
+.qa-btn.primary:hover{background:#e07258;}
+.qa-btn.ghost{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.12);}
+.qa-btn.ghost:hover{background:rgba(255,255,255,0.15);color:#fff;}
+
+/* SECTION */
+.section{margin-bottom:28px;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.section-header h2{font-size:18px;font-weight:700;color:var(--text);}
+.section-header a{font-size:13px;font-weight:600;color:var(--teal);text-decoration:none;}
+
+/* DOG CARDS */
+.dog-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.dog-card-sm{background:#fff;border-radius:var(--radius-xs);padding:14px 16px;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;text-decoration:none;transition:var(--transition);}
+.dog-card-sm:hover{box-shadow:var(--shadow-md);border-left-color:var(--coral);}
+.dog-card-sm .dc-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.dc-avatar.teal-bg{background:#e8f8f9;}
+.dc-avatar.coral-bg{background:#fdf0ec;}
+.dc-avatar.amber-bg{background:#fef8ed;}
+.dog-card-sm .dc-name{font-size:14px;font-weight:700;color:var(--text);}
+.dog-card-sm .dc-badge{font-size:11px;color:var(--sage);font-weight:600;}
+.dog-card-sm .dc-kcal{font-size:11.5px;color:var(--text-light);margin-top:2px;}
+
+/* DELIVERY TRACKER */
+.tracker-card{background:#fff;border-radius:var(--radius-sm);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.tracker-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.tracker-date{font-size:15px;font-weight:700;color:var(--text);}
+.tracker-id{font-size:12px;color:var(--text-lighter);margin-top:2px;}
+.tracker-status{font-size:11.5px;font-weight:600;padding:5px 12px;border-radius:50px;}
+.status-transit{background:#e0f5f5;color:#1a8a8a;}
+.stepper{display:flex;align-items:center;gap:0;margin:18px 0;position:relative;}
+.step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;}
+.step-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;z-index:2;border:2px solid var(--border);background:#fff;}
+.step-circle.done{background:var(--teal);color:#fff;border-color:var(--teal);}
+.step-circle.active{background:var(--deep-blue);color:#fff;border-color:var(--deep-blue);}
+.step-label{font-size:11px;color:var(--text-lighter);margin-top:6px;text-align:center;font-weight:500;}
+.step-label.active{color:var(--deep-blue);font-weight:700;}
+.step-line{position:absolute;top:18px;left:calc(50% + 18px);right:calc(-50% + 18px);height:2px;background:var(--border);z-index:1;}
+.step-line.done{background:var(--teal);}
+.tracker-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.tracker-address{font-size:12.5px;color:var(--text-light);}
+.tracker-items{font-size:12.5px;font-weight:600;color:var(--teal);}
+
+/* NEXT BOX PREVIEW */
+.box-preview{background:#fff;border-radius:var(--radius-sm);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.box-preview-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.box-tab{padding:6px 14px;border-radius:50px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text-light);transition:var(--transition);}
+.box-tab.active{background:var(--deep-blue);color:#fff;border-color:var(--deep-blue);}
+.box-items{display:flex;flex-direction:column;gap:10px;}
+.box-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--light-grey);border-radius:var(--radius-xs);}
+.box-item-emoji{font-size:22px;width:40px;text-align:center;}
+.box-item-info{flex:1;}
+.box-item-name{font-size:13px;font-weight:600;color:var(--text);}
+.box-item-type{font-size:11px;color:var(--text-lighter);}
+.box-item-qty{font-size:12px;font-weight:700;color:var(--teal);background:#e6f7f8;padding:3px 9px;border-radius:50px;}
+.box-tab-content{display:none;}
+.box-tab-content.active{display:block;}
+
+/* HAMBURGER */
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--deep-blue);border:none;border-radius:8px;padding:8px 10px;cursor:pointer;color:#fff;font-size:18px;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:90;}
+
+@media(max-width:900px){
+.hamburger{display:flex;}
+.sidebar{transform:translateX(-100%);}
+.sidebar.open{transform:translateX(0);}
+.overlay.show{display:block;}
+.main{margin-left:0;padding:20px 18px;padding-top:60px;}
+.stat-cards{grid-template-columns:1fr 1fr;}
+.dog-cards{grid-template-columns:1fr;}
+.quick-actions{flex-wrap:wrap;}
+.help-top-bar{flex-wrap:wrap;}
+}
+@media(max-width:480px){
+.stat-cards{grid-template-columns:1fr;}
+}
+.box-item-meta{font-size:11px;color:var(--text-lighter);margin-top:2px;}
+</style>
+</head>
+<body>
+
+    <button class="mobile-toggle" onclick="toggleSidebar()"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+<a href="index.html" class="sidebar-logo"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#fff" stroke="none" style="vertical-align:middle;margin-right:8px;"><path d="M12 4C9.5 4 7.5 5.5 7 7.5C5.5 7 4 8 3.5 9.5C3 11 3.5 12.5 5 13.5C4.5 15 5 16.5 6.5 17.5C7.5 18 9 18 10 17.5C10.5 19 12 20 13.5 20C15 20 16.5 19 17 17.5C18 18 19.5 18 20.5 17C21.5 16 22 14.5 21 13C22.5 12 23 10.5 22.5 9C22 7.5 20.5 7 19 7.5C18.5 5.5 16.5 4 14 4C13.3 4 12.7 4 12 4z"/><circle cx="10" cy="11" r="1.5" fill="var(--deep-blue)"/><circle cx="14" cy="11" r="1.5" fill="var(--deep-blue)"/><ellipse cx="12" cy="14" rx="2" ry="1.5" fill="var(--deep-blue)"/></svg><span>wunder<em>dog</em></span></a>
+<nav class="nav">
+      <a href="index.html" class="active"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span> Dashboard</a>
+      <a href="my-dogs.html"><span class="icon"><img src="nose-icon.png" alt="nose" width="18" height="18" style="vertical-align:middle;filter:brightness(0) invert(1);"></span> My Dogs</a>
+      <a href="my-plans.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> My Plans</a>
+      <a href="deliveries.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></span> Deliveries</a>
+      <a href="#"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></span> Products</a>
+      <a href="account.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Account</a>
+      <a href="referrals.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg></span> Referrals</a>
+      </nav>
+      <div class="sidebar-bottom">
+            <a href="https://knowledge.mywunderdog.com"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span> Help &amp; Support</a>
+            <a href="#"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span> Log Out</a>
+            </div>
+            </aside>
+            
+            <main class="main">
+            
+            <!-- HEADER -->
+            <div class="page-header">
+            <div>
+            <h1>Hello, Mariette! <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;"><path d="M18 8V6a2 2 0 0 0-4 0v1M14 7V4a2 2 0 0 0-4 0v4M10 7V5a2 2 0 0 0-4 0v6l-1.5-1.5a2 2 0 0 0-2.83 2.83L7 17.5A8 8 0 0 0 18 17V9a2 2 0 0 0-4 0"></path></svg></h1>
+            <p>Here's what's happening with your pups today &mdash; Thursday, 19 February 2026</p>
+            </div>
+            </div>
+            
+            <!-- HELP TOP BAR -->
+            <div class="help-top-bar">
+                  <a href="https://knowledge.mywunderdog.com" class="help-top-link"><span class="help-top-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span> FAQ</a>
+                  <a href="https://wa.me/971502298869" class="help-top-link"><span class="help-top-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></span> WhatsApp</a>
+                  <a href="mailto:hello@mywunderdog.com" class="help-top-link"><span class="help-top-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></span> Email</a>
+                  <a href="tel:+971502298869" class="help-top-link"><span class="help-top-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></span> Call Us</a>
+                  </div>
+                  
+                  <!-- DELIVERY ALERT -->
+                  <div class="alert-banner amber">
+                        <span class="alert-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+                        Your next delivery is <strong>today (8:00 am &ndash; 12:00 pm)</strong>. Changes can no longer be made.
+                        </div>
+                        
+                        <!-- STAT CARDS -->
+                        <div class="stat-cards">
+                        <a href="deliveries.html" class="stat-card teal">
+                        <div class="sc-label">Next Delivery</div>
+                        <div class="sc-value">Today</div>
+                        <div class="sc-detail">Thu 19 Feb &middot; 8am &ndash; 12pm</div>
+                        <span class="sc-link">View delivery &rarr;</span>
+                        </a>
+                        <a href="account.html" class="stat-card coral">
+                              <div class="sc-label">Next Payment</div>
+                              <div class="sc-value">21 Mar</div>
+                              <div class="sc-detail">AED 1,808.64 / month</div>
+                              <span class="sc-link">View payments &rarr;</span>
+                              </a>
+                              <a href="my-dogs.html" class="stat-card amber">
+                              <div class="sc-label">Active Dogs</div>
+                              <div class="sc-value">3</div>
+                              <div class="sc-detail">Bonnie &middot; Clyde &middot; Jack</div>
+                              <span class="sc-link">Manage dogs &rarr;</span>
+                              </a>
+                              </div>
+                              
+                              <!-- DELIVERY PROGRESS -->
+                              <div class="progress-section">
+                                    <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg> Delivery Progress &mdash; Current Cycle</span>
+                                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
+                                    <span class="ps-count">0 of 4 boxes delivered</span>
+                                    </div>
+                                    
+                                    <!-- QUICK ACTIONS -->
+                                    <div class="quick-actions">
+                                    <span class="qa-label">Quick Actions</span>
+                                    <a href="#" class="qa-btn outline"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg> Skip Delivery</a>
+                                    <a href="#" class="qa-btn outline"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg> Pause Plan</a>
+                                    <a href="account.html" class="qa-btn outline"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Update Address</a>
+                                    <a href="my-plans.html" class="qa-btn primary"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Manage Plan</a>
+                                    <a href="https://wa.me/971502298869" class="qa-btn ghost"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Support</a>
+                                    </div>
+                                    
+                                    <!-- MY DOGS -->
+                                    <div class="section">
+                                    <div class="section-header">
+                                    <h2>My Dogs</h2>
+                                    <a href="my-dogs.html">View all &rarr;</a>
+                                    </div>
+                                    <div class="dog-cards">
+                                    <a href="my-dogs.html" class="dog-card-sm">
+                                    <div class="dc-avatar teal-bg"><img src="nose-icon.png" alt="nose" width="24" height="24" style="vertical-align:middle;"></div>
+                                    <div>
+                                          <div class="dc-name">Bonnie</div>
+                                          <div class="dc-badge">&#10003; Subscribed</div>
+                                          <div class="dc-kcal">594 kcal/day</div>
+                                          </div>
+                                          </a>
+                                          <a href="my-dogs.html" class="dog-card-sm">
+                                                <div class="dc-avatar coral-bg"><img src="nose-icon.png" alt="nose" width="24" height="24" style="vertical-align:middle;"></div>
+                                                <div>
+                                                <div class="dc-name">Clyde</div>
+                                                <div class="dc-badge">&#10003; Subscribed</div>
+                                                <div class="dc-kcal">743 kcal/day</div>
+                                                </div>
+                                                </a>
+                                                <a href="my-dogs.html" class="dog-card-sm">
+                                                <div class="dc-avatar amber-bg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C10.5 2 9 3 8.5 5C7.5 4.5 6 4.5 5 5.5C4 6.5 4.2 8 5 9C3.5 9.5 2.5 11 3 12.5C3.5 14 5 15 6.5 14.5C7 16 8 17 9.5 17C10 17 10.5 16.8 11 16.5V18C9.5 18.5 8.5 19.5 8.5 21C8.5 21.5 9 22 9.5 22H14.5C15 22 15.5 21.5 15.5 21C15.5 19.5 14.5 18.5 13 18V16.5C13.5 16.8 14 17 14.5 17C16 17 17 16 17.5 14.5C19 15 20.5 14 21 12.5C21.5 11 20.5 9.5 19 9C19.8 8 20 6.5 19 5.5C18 4.5 16.5 4.5 15.5 5C15 3 13.5 2 12 2z"/></svg></div>
+                                                <div>
+                                                <div class="dc-name">Jack</div>
+                                                <div class="dc-badge">&#10003; Subscribed</div>
+                                                <div class="dc-kcal">739 kcal/day</div>
+                                                </div>
+                                                </a>
+                                                </div>
+                                                </div>
+                                                
+                                                <!-- DELIVERY TRACKER -->
+                                                <div class="section">
+                                                      <div class="section-header">
+                                                            <h2>Delivery Tracker</h2>
+                                                            <a href="deliveries.html">History &rarr;</a>
+                                                            </div>
+                                                            <div class="tracker-card">
+                                                            <div class="tracker-top">
+                                                            <div>
+                                                            <div class="tracker-date">Thursday, 19 February 2026</div>
+                                                            <div class="tracker-id">#99001</div>
+                                                            </div>
+                                                            <span class="tracker-status status-transit"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg> Out for delivery</span>
+                                                            </div>
+                                                            <div class="stepper">
+                                                                  <div class="step"><div class="step-circle done">&#10003;</div><div class="step-label">Ordered</div><div class="step-line done"></div></div>
+                                                                  <div class="step"><div class="step-circle done">&#10003;</div><div class="step-label">Prepared</div><div class="step-line done"></div></div>
+                                                                  <div class="step"><div class="step-circle active">&rarr;</div><div class="step-label active">Out for delivery</div><div class="step-line"></div></div>
+                                                                  <div class="step"><div class="step-circle">4</div><div class="step-label">Delivered</div></div>
+                                                                  </div>
+                                                                  <div class="tracker-footer">
+                                                                        <span class="tracker-address"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Aktio Marine, Ajman City Center</span>
+                                                                        <span class="tracker-items">22 items</span>
+                                                                        </div>
+                                                                        </div>
+                                                                        </div>
+                                                                        
+                                                                        <!-- WHAT'S IN YOUR NEXT BOX -->
+                                                                        <div class="section">
+                                                                        <div class="section-header">
+                                                                        <h2>What's In Your Next Box</h2>
+                                                                        <a href="my-plans.html">Edit box &rarr;</a>
+                                                                        </div>
+                                                                        <div class="box-preview">
+                                                                              <div class="box-preview-tabs">
+                                                                                  <button class="box-tab active" onclick="showBoxTab('bonnie')"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:middle;margin-right:4px;"><path d="M12 2C10.5 2 9 3 8.5 5C7.5 4.5 6 4.5 5 5.5C4 6.5 4.2 8 5 9C3.5 9.5 2.5 11 3 12.5C3.5 14 5 15 6.5 14.5C7 16 8 17 9.5 17C10 17 10.5 16.8 11 16.5V18C9.5 18.5 8.5 19.5 8.5 21C8.5 21.5 9 22 9.5 22H14.5C15 22 15.5 21.5 15.5 21C15.5 19.5 14.5 18.5 13 18V16.5C13.5 16.8 14 17 14.5 17C16 17 17 16 17.5 14.5C19 15 20.5 14 21 12.5C21.5 11 20.5 9.5 19 9C19.8 8 20 6.5 19 5.5C18 4.5 16.5 4.5 15.5 5C15 3 13.5 2 12 2z"/></svg> Bonnie</button>
+                                                                                  <button class="box-tab" onclick="showBoxTab('clyde')"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:middle;margin-right:4px;"><path d="M12 2C10.5 2 9 3 8.5 5C7.5 4.5 6 4.5 5 5.5C4 6.5 4.2 8 5 9C3.5 9.5 2.5 11 3 12.5C3.5 14 5 15 6.5 14.5C7 16 8 17 9.5 17C10 17 10.5 16.8 11 16.5V18C9.5 18.5 8.5 19.5 8.5 21C8.5 21.5 9 22 9.5 22H14.5C15 22 15.5 21.5 15.5 21C15.5 19.5 14.5 18.5 13 18V16.5C13.5 16.8 14 17 14.5 17C16 17 17 16 17.5 14.5C19 15 20.5 14 21 12.5C21.5 11 20.5 9.5 19 9C19.8 8 20 6.5 19 5.5C18 4.5 16.5 4.5 15.5 5C15 3 13.5 2 12 2z"/></svg> Clyde</button>
+                                                                                  <button class="box-tab" onclick="showBoxTab('jack')"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:middle;margin-right:4px;"><path d="M12 2C10.5 2 9 3 8.5 5C7.5 4.5 6 4.5 5 5.5C4 6.5 4.2 8 5 9C3.5 9.5 2.5 11 3 12.5C3.5 14 5 15 6.5 14.5C7 16 8 17 9.5 17C10 17 10.5 16.8 11 16.5V18C9.5 18.5 8.5 19.5 8.5 21C8.5 21.5 9 22 9.5 22H14.5C15 22 15.5 21.5 15.5 21C15.5 19.5 14.5 18.5 13 18V16.5C13.5 16.8 14 17 14.5 17C16 17 17 16 17.5 14.5C19 15 20.5 14 21 12.5C21.5 11 20.5 9.5 19 9C19.8 8 20 6.5 19 5.5C18 4.5 16.5 4.5 15.5 5C15 3 13.5 2 12 2z"/></svg> Jack</button>
+                                                                                    </div>
+                                                                                    <div id="tab-bonnie" class="box-tab-content active">
+                                                                                      <div class="box-items">
+                                                                                        <div class="box-item">
+                                                                                          <div class="box-item-emoji">🥩</div>
+                                                                                          <div class="box-item-info">
+                                                                                            <div class="box-item-name">WUNDERCARE + CAMEL W/ DATES</div>
+                                                                                            <div class="box-item-meta">Wet · 400g pouch</div>
+                                                                                          </div>
+                                                                                          <span class="box-item-qty">x4</span>
+                                                                                        </div>
+                                                                                        <div class="box-item">
+                                                                                          <div class="box-item-emoji">🍗</div>
+                                                                                          <div class="box-item-info">
+                                                                                            <div class="box-item-name">Turkey w/ Honey &amp; Carrot</div>
+                                                                                            <div class="box-item-meta">Wet · 400g pouch</div>
+                                                                                          </div>
+                                                                                          <span class="box-item-qty">x4</span>
+                                                                                        </div>
+                                                                                        <div class="box-item">
+                                                                                          <div class="box-item-emoji">🌾</div>
+                                                                                          <div class="box-item-info">
+                                                                                            <div class="box-item-name">Weight Control Dry Blend</div>
+                                                                                            <div class="box-item-meta">Dry · 2kg bag</div>
+                                                                                          </div>
+                                                                                          <span class="box-item-qty">x1</span>
+                                                                                        </div>
+                                                                                        <div class="box-item">
+                                                                                          <div class="box-item-emoji">💊</div>
+                                                                                          <div class="box-item-info">
+                                                                                            <div class="box-item-name">Joint Support Supplement</div>
+                                                                                            <div class="box-item-meta">Supplement · 60 chews</div>
+                                                                                          </div>
+                                                                                          <span class="box-item-qty">x1</span>
+                                                                                        </div>
+                                                                                      </div>
+                                                                                    </div>
+                                                                                    <div id="tab-clyde" class="box-tab-content">
+                                                                                      <div class="box-items">
+                                                                                        <div class="box-item">
+                                                                                          <div class="box-item-emoji">🥩</div>
+                                                                                          <div class="box-item-info">
+                                                                                            <div class="box-item-name">Lamb w/ Sweet Potato</div>
+                                                                                            <div class="box-item-meta">Wet · 400g pouch</div>
+                                                                                          </div>
+                                                                                          <span class="box-item-qty">x6</span>
+                                                                                        </div>
+                                                                                        <div class="box-item">
+                                                                                          <div class="box-item-emoji">🐟</div>
+                                                                                          <div class="box-item-info">
+                                                                                            <div class="box-item-name">Salmon &amp; Rice Premium Blend</div>
+                                                                                            <div class="box-item-meta">Wet · 400g pouch</div>
+                                                                                          </div>
+                                                                                          <span class="box-item-qty">x4</span>
+                                                                                        </div>
+                                                                                        <div class="box-item">
+                                                                                          <div class="box-item-emoji">🌾</div>
+                                                                                          <div class="box-item-info">
+                                                                                            <div class="box-item-name">Active Adult Dry Mix</div>
+                                                                                            <div class="box-item-meta">Dry · 2kg bag</div>
+                                                                                          </div>
+                                                                                          <span class="box-item-qty">x1</span>
+                                                                                        </div>
+                                                                                      </div>
+                                                                                    </div>
+                                                                                    <div id="tab-jack" class="box-tab-content">
+                                                                                      <div class="box-items">
+                                                                                        <div class="box-item">
+                                                                                          <div class="box-item-emoji">🍗</div>
+                                                                                          <div class="box-item-info">
+                                                                                            <div class="box-item-name">Chicken w/ Pumpkin &amp; Turmeric</div>
+                                                                                            <div class="box-item-meta">Wet · 400g pouch</div>
+                                                                                          </div>
+                                                                                          <span class="box-item-qty">x5</span>
+                                                                                        </div>
+                                                                                        <div class="box-item">
+                                                                                          <div class="box-item-emoji">🥩</div>
+                                                                                          <div class="box-item-info">
+                                                                                            <div class="box-item-name">Beef &amp; Quinoa Power Bowl</div>
+                                                                                            <div class="box-item-meta">Wet · 400g pouch</div>
+                                                                                          </div>
+                                                                                          <span class="box-item-qty">x5</span>
+                                                                                        </div>
+                                                                                        <div class="box-item">
+                                                                                          <div class="box-item-emoji">🌾</div>
+                                                                                          <div class="box-item-info">
+                                                                                            <div class="box-item-name">Performance Dry Blend</div>
+                                                                                            <div class="box-item-meta">Dry · 2kg bag</div>
+                                                                                          </div>
+                                                                                          <span class="box-item-qty">x1</span>
+                                                                                        </div>
+                                                                                      </div>
+                                                                                    </div>
+                                                                                  </div>
+                                                                                </div>
+    </main>
+<script>
+function showBoxTab(name){
+  document.querySelectorAll('.box-tab-content').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.box-tab').forEach(function(el){el.classList.remove('active');});
+  var content = document.getElementById('tab-' + name);
+  if (content) content.classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>

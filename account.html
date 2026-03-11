@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account - Wunderdog</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+--deep-blue:#2B6691;--teal:#4FC3CA;--coral:#ED8264;--amber:#E8A849;
+--light-grey:#F8F9FA;--sage:#7CB69D;--white:#ffffff;
+--text:#1a2e3b;--text-light:#5a7080;--text-lighter:#8fa3b0;
+--radius:16px;--radius-sm:12px;--radius-xs:8px;
+--shadow:0 2px 12px rgba(0,0,0,0.08);--shadow-md:0 4px 20px rgba(0,0,0,0.12);
+--transition:all 0.2s ease;
+}
+body{font-family:'Poppins',sans-serif;background:var(--light-grey);color:var(--text);display:flex;min-height:100vh;}
+
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--deep-blue);border:none;border-radius:8px;padding:8px 10px;cursor:pointer;color:#fff;font-size:18px;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:90;}
+
+.sidebar{width:220px;background:var(--deep-blue);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:var(--transition);}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.sidebar-logo a{text-decoration:none;}
+.sidebar-logo span{font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.5px;}
+.sidebar-logo span em{color:var(--coral);font-style:normal;}
+.nav{flex:1;padding:16px 12px;overflow-y:auto;}
+.nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-xs);color:rgba(255,255,255,0.75);text-decoration:none;font-size:13.5px;font-weight:500;margin-bottom:2px;transition:var(--transition);}
+.nav a:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.nav a.active{background:var(--teal);color:#fff;font-weight:600;}
+.nav a .icon{width:22px;text-align:center;font-size:15px;display:inline-flex;align-items:center;justify-content:center;}
+.badge{background:var(--teal);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:auto;line-height:1.4;}
+.badge.alert{background:var(--coral);}
+.sidebar-bottom{padding:16px 12px;border-top:1px solid rgba(255,255,255,0.1);}
+.sidebar-bottom a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-xs);color:rgba(255,255,255,0.6);text-decoration:none;font-size:13px;font-weight:500;margin-bottom:2px;transition:var(--transition);}
+.sidebar-bottom a:hover{background:rgba(255,255,255,0.1);color:#fff;}
+
+.main{margin-left:220px;flex:1;padding:32px 36px;max-width:1100px;}
+.page-header{margin-bottom:24px;}
+.page-header h1{font-size:26px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
+.page-header p{color:var(--text-light);font-size:14px;margin-top:4px;}
+
+/* PROFILE HERO */
+.profile-hero{background:var(--deep-blue);border-radius:var(--radius-sm);padding:24px 28px;margin-bottom:20px;display:flex;align-items:center;gap:20px;color:#fff;}
+.profile-avatar{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0;}
+.profile-info{flex:1;}
+.profile-name{font-size:20px;font-weight:700;margin-bottom:2px;}
+.profile-detail{font-size:13px;opacity:0.75;}
+.btn-edit-profile{border:1.5px solid rgba(255,255,255,0.4);color:#fff;background:transparent;border-radius:20px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:var(--transition);}
+.btn-edit-profile:hover{background:rgba(255,255,255,0.15);}
+
+/* FAILED PAYMENT ALERT */
+.failed-alert{background:#fff5f5;border:1px solid #ffc5c5;border-radius:var(--radius-xs);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.failed-alert .alert-icon{font-size:18px;flex-shrink:0;}
+.failed-alert .alert-text{flex:1;font-size:13.5px;color:#8b1a1a;}
+.failed-alert .alert-text strong{font-weight:700;}
+.btn-update-payment{background:var(--coral);color:#fff;border:none;border-radius:20px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap;text-decoration:none;display:inline-block;}
+.btn-update-payment:hover{background:#e0714f;}
+
+/* 2 COL GRID */
+.account-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+
+/* SETTINGS PANEL */
+.panel{background:#fff;border-radius:var(--radius-sm);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px;}
+.panel-title{font-size:16px;font-weight:700;color:var(--text);padding:18px 20px 0;}
+.settings-item{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid #f0f4f7;cursor:pointer;transition:var(--transition);}
+.settings-item:last-child{border-bottom:none;}
+.settings-item:hover{background:#f8fafc;}
+.settings-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.icon-blue{background:#eef5fb;}
+.icon-teal{background:#e8f8f9;}
+.icon-coral{background:#fdf0ec;}
+.settings-text{flex:1;}
+.settings-label{font-size:14px;font-weight:600;color:var(--text);}
+.settings-sub{font-size:12px;color:var(--text-lighter);}
+.settings-value{font-size:12.5px;color:var(--text-light);text-align:right;}
+.settings-chevron{color:var(--text-lighter);font-size:18px;margin-left:8px;}
+
+/* ADDRESS */
+.address-card{border:1.5px solid var(--teal);border-radius:var(--radius-xs);padding:14px 16px;display:flex;align-items:center;gap:10px;margin:12px 20px;}
+.address-check{color:var(--teal);font-size:16px;font-weight:700;}
+.address-text{flex:1;font-size:13.5px;font-weight:600;color:var(--text);}
+.address-sub{font-size:12px;color:var(--teal);}
+.btn-add-address{display:flex;align-items:center;justify-content:center;gap:8px;border:2px dashed #d0dce6;border-radius:var(--radius-xs);padding:12px;margin:0 20px 16px;color:var(--text-lighter);font-size:13.5px;font-weight:500;cursor:pointer;background:none;font-family:'Poppins',sans-serif;transition:var(--transition);}
+.btn-add-address:hover{border-color:var(--teal);color:var(--teal);}
+
+/* PAYMENT HISTORY */
+.payment-row{display:flex;align-items:center;padding:13px 20px;border-bottom:1px solid #f0f4f7;}
+.payment-row:last-child{border-bottom:none;}
+.payment-row.failed-row{background:#fff8f8;}
+.payment-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-right:12px;flex-shrink:0;}
+.payment-icon.warn{background:#fff3e0;}
+.payment-icon.ok{background:#eef5fb;}
+.payment-num{font-size:13.5px;font-weight:600;color:var(--text);}
+.payment-date{font-size:12px;color:var(--text-lighter);}
+.payment-amount{font-size:13.5px;font-weight:600;color:var(--text);margin-left:auto;}
+.payment-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:12px;}
+.status-scheduled{background:#eef5fb;color:var(--deep-blue);}
+.status-paid{background:#edfbf4;color:#2d8a5e;}
+.status-failed{background:#fff0f0;color:#c0392b;}
+.btn-retry{border:1.5px solid var(--coral);color:var(--coral);background:#fff;border-radius:20px;padding:4px 12px;font-size:11.5px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;margin-left:8px;transition:var(--transition);}
+.btn-retry:hover{background:var(--coral);color:#fff;}
+
+.view-all-payments{display:flex;justify-content:center;padding:14px;border-top:1px solid #f0f4f7;}
+.view-all-payments a{color:var(--teal);font-size:13px;font-weight:600;text-decoration:none;}
+.view-all-payments a:hover{opacity:0.8;}
+
+.btn-add-payment{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--coral);color:#fff;border:none;border-radius:var(--radius-xs);padding:12px 20px;margin:12px 20px 16px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:var(--transition);}
+.btn-add-payment:hover{background:#e0714f;}
+.add-payment-note{text-align:center;font-size:11.5px;color:var(--coral);padding:0 20px 14px;font-weight:500;}
+
+@media(max-width:900px){
+.hamburger{display:flex;}
+.sidebar{transform:translateX(-100%);}
+.sidebar.open{transform:translateX(0);}
+.overlay.show{display:block;}
+.main{margin-left:0;padding:20px 18px;padding-top:60px;}
+.account-grid{grid-template-columns:1fr;}
+}
+@media(max-width:500px){
+.profile-hero{flex-wrap:wrap;}
+.failed-alert{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+  <button class="mobile-toggle" onclick="toggleSidebar()"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <a href="index.html"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#fff" stroke="none" style="vertical-align:middle;margin-right:8px;"><path d="M12 4C9.5 4 7.5 5.5 7 7.5C5.5 7 4 8 3.5 9.5C3 11 3.5 12.5 5 13.5C4.5 15 5 16.5 6.5 17.5C7.5 18 9 18 10 17.5C10.5 19 12 20 13.5 20C15 20 16.5 19 17 17.5C18 18 19.5 18 20.5 17C21.5 16 22 14.5 21 13C22.5 12 23 10.5 22.5 9C22 7.5 20.5 7 19 7.5C18.5 5.5 16.5 4 14 4C13.3 4 12.7 4 12 4z"/><circle cx="10" cy="11" r="1.5" fill="var(--deep-blue)"/><circle cx="14" cy="11" r="1.5" fill="var(--deep-blue)"/><ellipse cx="12" cy="14" rx="2" ry="1.5" fill="var(--deep-blue)"/></svg><span>wunder<em>dog</em></span></a>
+  </div>
+  <nav class="nav">
+    <a href="index.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span> Dashboard</a>
+    <a href="my-dogs.html"><span class="icon"><img src="nose-icon.png" alt="nose" width="18" height="18" style="vertical-align:middle;filter:brightness(0) invert(1);"></span> My Dogs</a>
+    <a href="my-plans.html"><span class="icon">📋</span> My Plans</a>
+    <a href="deliveries.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></span> Deliveries</a>
+    <a href="index.html#"><span class="icon">🛍️</span> Products</a>
+    <a href="account.html" class="active"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Account</a>
+    <a href="referrals.html"><span class="icon">🎁</span> Referrals</a>
+  </nav>
+  <div class="sidebar-bottom">
+    <a href="https://knowledge.mywunderdog.com"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span> Help &amp; Support</a>
+    <a href="index.html#"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span> Log Out</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="page-header">
+    <h1>Account</h1>
+    <p>Manage your personal details and billing</p>
+  </div>
+
+  <!-- Profile Hero -->
+  <div class="profile-hero">
+    <div class="profile-avatar">M</div>
+    <div class="profile-info">
+      <div class="profile-name">Mariette Du Plessis</div>
+      <div class="profile-detail">duplessis.mariette@gmail.com</div>
+      <div class="profile-detail">+30 699 438 1051</div>
+    </div>
+    <button class="btn-edit-profile"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Edit Profile</button>
+  </div>
+
+  <!-- Failed Payment Alert -->
+  <div class="failed-alert">
+    <div class="alert-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+    <div class="alert-text"><strong>You have failed payments.</strong> Please update your payment method to avoid interruptions to your delivery.</div>
+    <a href="#payment-methods" class="btn-update-payment">Update Payment →</a>
+  </div>
+
+  <!-- 2-column grid -->
+  <div class="account-grid">
+
+    <!-- LEFT: Settings + Address -->
+    <div>
+      <div class="panel">
+        <div class="panel-title">Account Settings</div>
+        <div class="settings-item">
+          <div class="settings-icon icon-blue"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+          <div class="settings-text">
+            <div class="settings-label">Personal Info</div>
+            <div class="settings-sub">Name, email, phone</div>
+          </div>
+          <span class="settings-chevron">›</span>
+        </div>
+        <div class="settings-item">
+          <div class="settings-icon icon-teal"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+          <div class="settings-text">
+            <div class="settings-label">Delivery Address</div>
+            <div class="settings-sub">Manage your addresses</div>
+          </div>
+          <span class="settings-value">Aktio Marine</span>
+          <span class="settings-chevron">›</span>
+        </div>
+        <div class="settings-item" id="payment-methods">
+          <div class="settings-icon icon-coral"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></div>
+          <div class="settings-text">
+            <div class="settings-label">Payment Methods</div>
+            <div class="settings-sub">Cards and billing</div>
+          </div>
+          <span class="settings-value">No card stored</span>
+          <span class="settings-chevron">›</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title" style="padding-bottom:12px;">Delivery Address</div>
+        <div class="address-card">
+          <span class="address-check">✓</span>
+          <div>
+            <div class="address-text">Aktio Marine, Ajman City Center</div>
+            <div class="address-sub">Current delivery address</div>
+          </div>
+        </div>
+        <button class="btn-add-address">+ Add new address</button>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title" style="padding-bottom:12px;">Add Payment Method</div>
+        <button class="btn-add-payment"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Add a payment method</button>
+        <div class="add-payment-note">⚠️ A card is required to continue receiving deliveries.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Payment History -->
+    <div>
+      <div class="panel">
+        <div class="panel-title" style="padding-bottom:4px;">Payment History</div>
+        <div class="payment-row">
+          <div class="payment-icon ok">💳</div>
+          <div><div class="payment-num">#67888</div><div class="payment-date">21 Mar 2026</div></div>
+          <div class="payment-amount">AED 1,808.64</div>
+          <span class="payment-status status-scheduled">Scheduled</span>
+        </div>
+        <div class="payment-row">
+          <div class="payment-icon ok"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></div>
+          <div><div class="payment-num">#67887</div><div class="payment-date">17 Feb 2026</div></div>
+          <div class="payment-amount">AED 432.90</div>
+          <span class="payment-status status-paid">Paid</span>
+        </div>
+        <div class="payment-row">
+          <div class="payment-icon ok">💳</div>
+          <div><div class="payment-num">#66643</div><div class="payment-date">15 Jan 2026</div></div>
+          <div class="payment-amount">AED 120</div>
+          <span class="payment-status status-paid">Paid</span>
+        </div>
+        <div class="payment-row failed-row">
+          <div class="payment-icon warn"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+          <div><div class="payment-num">#66835</div><div class="payment-date">21 Jan 2026</div></div>
+          <div class="payment-amount">AED 75</div>
+          <span class="payment-status status-failed">Failed</span>
+          <button class="btn-retry">Retry</button>
+        </div>
+        <div class="payment-row failed-row">
+          <div class="payment-icon warn">⚠️</div>
+          <div><div class="payment-num">#66661</div><div class="payment-date">18 Jan 2026</div></div>
+          <div class="payment-amount">AED 4,470</div>
+          <span class="payment-status status-failed">Failed</span>
+          <button class="btn-retry">Retry</button>
+        </div>
+        <div class="view-all-payments"><a href="#">View all payments →</a></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+</script>
+</body>
+</html>

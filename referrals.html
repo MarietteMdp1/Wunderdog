@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referrals - Wunderdog</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+--deep-blue:#2B6691;--teal:#4FC3CA;--coral:#ED8264;--amber:#E8A849;
+--light-grey:#F8F9FA;--sage:#7CB69D;--white:#ffffff;
+--text:#1a2e3b;--text-light:#5a7080;--text-lighter:#8fa3b0;
+--radius:16px;--radius-sm:12px;--radius-xs:8px;
+--shadow:0 2px 12px rgba(0,0,0,0.08);--shadow-md:0 4px 20px rgba(0,0,0,0.12);
+--transition:all 0.2s ease;
+}
+body{font-family:'Poppins',sans-serif;background:var(--light-grey);color:var(--text);display:flex;min-height:100vh;}
+
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--deep-blue);border:none;border-radius:8px;padding:8px 10px;cursor:pointer;color:#fff;font-size:18px;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:90;}
+
+.sidebar{width:220px;background:var(--deep-blue);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:var(--transition);}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.sidebar-logo a{text-decoration:none;}
+.sidebar-logo span{font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.5px;}
+.sidebar-logo span em{color:var(--coral);font-style:normal;}
+.nav{flex:1;padding:16px 12px;overflow-y:auto;}
+.nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-xs);color:rgba(255,255,255,0.75);text-decoration:none;font-size:13.5px;font-weight:500;margin-bottom:2px;transition:var(--transition);}
+.nav a:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.nav a.active{background:var(--teal);color:#fff;font-weight:600;}
+.nav a .icon{width:22px;text-align:center;font-size:15px;display:inline-flex;align-items:center;justify-content:center;}
+.badge{background:var(--teal);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:auto;line-height:1.4;}
+.badge.alert{background:var(--coral);}
+.sidebar-bottom{padding:16px 12px;border-top:1px solid rgba(255,255,255,0.1);}
+.sidebar-bottom a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-xs);color:rgba(255,255,255,0.6);text-decoration:none;font-size:13px;font-weight:500;margin-bottom:2px;transition:var(--transition);}
+.sidebar-bottom a:hover{background:rgba(255,255,255,0.1);color:#fff;}
+
+.main{margin-left:220px;flex:1;padding:32px 36px;max-width:1000px;}
+.page-header{margin-bottom:24px;}
+.page-header h1{font-size:26px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
+.page-header p{color:var(--text-light);font-size:14px;margin-top:4px;}
+
+/* HERO */
+.referral-hero{background:var(--deep-blue);border-radius:var(--radius-sm);padding:32px;margin-bottom:24px;text-align:center;color:#fff;}
+.hero-emoji{font-size:42px;margin-bottom:12px;}
+.referral-hero h2{font-size:22px;font-weight:700;margin-bottom:8px;}
+.referral-hero p{font-size:14px;opacity:0.8;margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto;}
+
+.code-box{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:20px;}
+.code-input{background:rgba(255,255,255,0.12);border:1.5px dashed rgba(255,255,255,0.4);border-right:none;border-radius:12px 0 0 12px;padding:12px 24px;font-size:18px;font-weight:700;letter-spacing:2px;color:#fff;font-family:'Poppins',sans-serif;}
+.btn-copy{background:var(--coral);color:#fff;border:none;border-radius:0 12px 12px 0;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:var(--transition);}
+.btn-copy:hover{background:#e0714f;}
+.btn-copy.copied{background:var(--sage);}
+
+.share-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-share{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.85);background:transparent;font-size:13px;font-weight:500;cursor:pointer;font-family:'Poppins',sans-serif;transition:var(--transition);}
+.btn-share:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.6);}
+
+/* REWARD CARDS */
+.reward-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.reward-card{background:#fff;border-radius:var(--radius-sm);box-shadow:var(--shadow);padding:24px;text-align:center;}
+.reward-emoji{font-size:32px;margin-bottom:10px;}
+.reward-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-lighter);margin-bottom:6px;}
+.reward-amount{font-size:24px;font-weight:700;color:var(--deep-blue);margin-bottom:4px;}
+.reward-detail{font-size:12.5px;color:var(--teal);font-weight:500;}
+
+/* STATS */
+.stats-card{background:#fff;border-radius:var(--radius-sm);box-shadow:var(--shadow);padding:24px;text-align:center;margin-bottom:24px;}
+.stats-number{font-size:48px;font-weight:700;color:var(--deep-blue);line-height:1;}
+.stats-label{font-size:14px;color:var(--text-light);margin-top:6px;margin-bottom:8px;}
+.stats-hint{font-size:12.5px;color:var(--text-lighter);}
+
+/* MILESTONE */
+.milestone-section{background:#fff;border-radius:var(--radius-sm);box-shadow:var(--shadow);padding:20px;margin-bottom:24px;}
+.milestone-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;}
+.milestone-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.milestone-row:last-child{margin-bottom:0;}
+.ms-num{width:32px;height:32px;border-radius:50%;border:2px solid #d0dce6;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-lighter);flex-shrink:0;}
+.ms-num.achieved{background:var(--teal);border-color:var(--teal);color:#fff;}
+.ms-text{flex:1;font-size:13px;color:var(--text-light);}
+.ms-reward{font-size:12px;font-weight:600;color:var(--deep-blue);background:#eef5fb;padding:3px 10px;border-radius:20px;}
+
+/* HOW IT WORKS */
+.how-section h2{font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px;}
+.how-item{display:flex;gap:14px;margin-bottom:16px;background:#fff;border-radius:var(--radius-sm);box-shadow:var(--shadow);padding:16px 18px;}
+.how-num{width:32px;height:32px;border-radius:50%;background:var(--deep-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.how-text strong{display:block;font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.how-text span{font-size:13px;color:var(--text-light);}
+.how-text em{font-style:normal;font-weight:700;color:var(--deep-blue);}
+
+@media(max-width:900px){
+.hamburger{display:flex;}
+.sidebar{transform:translateX(-100%);}
+.sidebar.open{transform:translateX(0);}
+.overlay.show{display:block;}
+.main{margin-left:0;padding:20px 18px;padding-top:60px;}
+.reward-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:500px){
+.reward-grid{grid-template-columns:1fr;}
+.code-input{font-size:15px;padding:10px 16px;}
+}
+</style>
+</head>
+<body>
+
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <a href="index.html"><span>wunder<em>dog</em></span></a>
+  </div>
+  <nav class="nav">
+    <a href="index.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span> Dashboard</a>
+    <a href="my-dogs.html"><span class="icon">🐕</span> My Dogs</a>
+    <a href="my-plans.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> My Plans</a>
+    <a href="deliveries.html"><span class="icon">📦</span> Deliveries <span class="badge">1</span></a>
+    <a href="index.html#"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></span> Products</a>
+    <a href="account.html"><span class="icon">👤</span> Account <span class="badge alert">!</span></a>
+    <a href="referrals.html" class="active"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg></span> Referrals</a>
+  </nav>
+  <div class="sidebar-bottom">
+    <a href="https://knowledge.mywunderdog.com"><span class="icon">❓</span> Help &amp; Support</a>
+    <a href="index.html#"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span> Log Out</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="page-header">
+    <h1>Referrals</h1>
+    <p>Invite friends and earn rewards together</p>
+  </div>
+
+  <!-- Hero -->
+  <div class="referral-hero">
+    <div class="hero-emoji">🎁</div>
+    <h2>Invite Friends, Earn Rewards!</h2>
+    <p>Share the love. Get 10% off your next box for every friend who joins Wunderdog.</p>
+    <div class="code-box">
+      <div class="code-input" id="refCode">MarietteTQQE</div>
+      <button class="btn-copy" id="copyBtn" onclick="copyCode()">Copy</button>
+    </div>
+    <div class="share-btns">
+      <button class="btn-share">🟢 WhatsApp</button>
+      <button class="btn-share">🔗 Copy Link</button>
+      <button class="btn-share"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Email</button>
+    </div>
+  </div>
+
+  <!-- Rewards Grid -->
+  <div class="reward-grid">
+    <div class="reward-card">
+      <div class="reward-emoji">🎉</div>
+      <div class="reward-label">Your Friends Get</div>
+      <div class="reward-amount">10% off</div>
+      <div class="reward-detail">first order + 10 Wunderdog points</div>
+    </div>
+    <div class="reward-card">
+      <div class="reward-emoji">🏆</div>
+      <div class="reward-label">You Get</div>
+      <div class="reward-amount">10% off</div>
+      <div class="reward-detail">next box + 10 Wunderdog points</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-card">
+    <div class="stats-number">0</div>
+    <div class="stats-label">Friends referred so far</div>
+    <div class="stats-hint">🐾 Share your code to start earning! Refer 3 friends to unlock a free topper.</div>
+  </div>
+
+  <!-- Milestone Tracker -->
+  <div class="milestone-section">
+    <div class="milestone-title">🏅 Milestone Rewards</div>
+    <div class="milestone-row">
+      <div class="ms-num">1</div>
+      <div class="ms-text">Refer your first friend</div>
+      <span class="ms-reward">10% off next box</span>
+    </div>
+    <div class="milestone-row">
+      <div class="ms-num">3</div>
+      <div class="ms-text">Refer 3 friends</div>
+      <span class="ms-reward">🌿 Free Topper</span>
+    </div>
+    <div class="milestone-row">
+      <div class="ms-num">5</div>
+      <div class="ms-text">Refer 5 friends</div>
+      <span class="ms-reward"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg> Free Box</span>
+    </div>
+  </div>
+
+  <!-- How It Works -->
+  <div class="how-section">
+    <h2>How It Works</h2>
+    <div class="how-item">
+      <div class="how-num">1</div>
+      <div class="how-text">
+        <strong>Share your code</strong>
+        <span>Invite pet parents by sharing your code <em>MarietteTQQE</em> or tell them to enter it before checkout.</span>
+      </div>
+    </div>
+    <div class="how-item">
+      <div class="how-num">2</div>
+      <div class="how-text">
+        <strong>Friend places their first order</strong>
+        <span>Your friend orders their first Wunderdog box and gets 10% off — thanks to you!</span>
+      </div>
+    </div>
+    <div class="how-item">
+      <div class="how-num">3</div>
+      <div class="how-text">
+        <strong>You both win</strong>
+        <span>Their pup enjoys tasty fresh meals and you get 10% off your next box. Winning! 🎊</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function copyCode(){
+  const code = document.getElementById('refCode').textContent;
+  navigator.clipboard.writeText(code).catch(() => {});
+  const btn = document.getElementById('copyBtn');
+  btn.textContent = '✓ Copied!';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+}
+</script>
+</body>
+</html>
