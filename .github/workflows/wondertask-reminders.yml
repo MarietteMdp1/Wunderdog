@@ -1,0 +1,28 @@
+# WonderTask — due-date reminders. Runs on GitHub every weekday morning: emails each
+# member their overdue / due-within-2-days tasks (no-op until mail is configured).
+name: WonderTask due reminders
+on:
+  schedule:
+    - cron: "0 4 * * 1-5"   # 04:00 UTC = 08:00 UAE, weekdays
+  workflow_dispatch: {}
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r wondertask/requirements.txt
+      - name: Send due-date reminders
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          MS_TENANT_ID: ${{ secrets.MS_TENANT_ID }}
+          MS_CLIENT_ID: ${{ secrets.MS_CLIENT_ID }}
+          MS_CLIENT_SECRET: ${{ secrets.MS_CLIENT_SECRET }}
+          MAIL_SENDER: ${{ secrets.MAIL_SENDER }}
+          APP_URL: ${{ vars.WONDERTASK_URL }}
+        run: python wondertask/remind_due.py

@@ -1,0 +1,4 @@
+# WonderTask — same stack as wunderdog-dashboard (Flask on Render + Supabase REST)
+flask==3.0.3
+gunicorn==23.0.0
+anthropic>=0.90.0        # Claude task extraction & allocation

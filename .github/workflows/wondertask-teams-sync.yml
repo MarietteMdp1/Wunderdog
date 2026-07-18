@@ -1,0 +1,29 @@
+# WonderTask — Teams channel → tasks. Runs on GitHub: analyzes new messages in the
+# configured Teams channel (cursor-tracked, so each run only sees new messages).
+name: WonderTask Teams sync
+on:
+  schedule:
+    - cron: "30 4,9,13 * * 1-5"   # 3× on weekdays (08:30 / 13:30 / 17:30 UAE)
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r wondertask/requirements.txt
+      - name: Sync Teams channel
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MS_TENANT_ID: ${{ secrets.MS_TENANT_ID }}
+          MS_CLIENT_ID: ${{ secrets.MS_CLIENT_ID }}
+          MS_CLIENT_SECRET: ${{ secrets.MS_CLIENT_SECRET }}
+          TEAMS_TEAM_ID: ${{ secrets.TEAMS_TEAM_ID }}
+          TEAMS_CHANNEL_ID: ${{ secrets.TEAMS_CHANNEL_ID }}
+        run: python wondertask/sync_teams.py
